@@ -1,0 +1,56 @@
+@import 'compass/reset';
+@import "compass/css3";
+body{
+  font-size: 1.4rem;
+  color: #000;
+}
+@media screen and (max-width: 3440px) {
+  body{
+    background: #000 url("../images/bg@3440.jpg") no-repeat top center;
+  }
+}
+@media screen and (max-width: 2880px) {
+  body{
+    background: #000 url("../images/bg@2880.jpg") no-repeat top center;
+  }
+}
+@media screen and (max-width: 1920px) {
+  body{
+    background: #000 url("../images/bg@1920.jpg") no-repeat top center;
+  }
+}
+@media screen and (max-width: 1000px) {
+  body{
+    background: transparent;
+  }
+}
+div{
+  @include box-sizing(border-box);
+}
+input,textarea{
+  outline:none;
+  &:focus{
+    border:none;
+  }
+}
+a{
+  text-decoration: none;
+}
+.f_del{
+  text-decoration: line-through;
+}
+.fl_lt{
+  float: left;
+}
+.fl_rt{
+  float: right;
+}
+.ta_c{
+  text-align: center;
+}
+.main{
+  width: 10rem;
+  margin-left: auto;
+  margin-right: auto;
+  background: #eee;
+}
