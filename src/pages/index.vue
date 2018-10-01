@@ -25,11 +25,15 @@
         <div class="skill-box" v-for="(skill,index) in characterSkill[characterSelected]" :key="skill.name">
           <div class="skill-info">
             <div class="skill-img"><img :src="'/static/images/'+ characterSelected + index +'.jpg'" alt=""></div>
-            <div class="skill-info-line">{{skill.name}}</div>
-            <div class="skill-info-line">{{skill.class}}系</div>
-            <div class="skill-info-line">升级所需SP：{{skill.sp[characterSkillCurrent[index]]}}</div>
-            <div class="skill-info-line">升级所需等级：{{skill.level[characterSkillCurrent[index]]}}</div>
-            <div class="skill-info-line">升级需要{{skill.class}}系技能点数：{{skill.require[characterSkillCurrent[index]]}}</div>
+            <div class="skill-info-line">{{skill.name}} | {{skill.class}}系</div>
+            <div class="skill-info-line"  v-if="skill.max === characterSkillCurrent[index]">{{skill.detail[characterSkillCurrent[index] - 1]}}</div>
+            <div class="skill-info-line" v-else>升级后：{{skill.detail[characterSkillCurrent[index]]}}</div>
+            <div class="skill-info-line" v-if="skill.max === characterSkillCurrent[index]"></div>
+            <div class="skill-info-line" v-else>升级所需SP：{{skill.sp[characterSkillCurrent[index]]}}</div>
+            <div class="skill-info-line" v-if="skill.max === characterSkillCurrent[index]"></div>
+            <div class="skill-info-line" v-else>升级所需等级：{{skill.level[characterSkillCurrent[index]]}}</div>
+            <div class="skill-info-line" v-if="skill.max === characterSkillCurrent[index]">已达满级</div>
+            <div class="skill-info-line" v-else>升级需要{{skill.class}}系技能点数：{{skill.require[characterSkillCurrent[index]]}}</div>
             <div class="skill-level-line">
               <div class="skill-level-bottom" :style="'width: ' + skill.max * 10 + '%'"></div>
               <div class="skill-level-bg" :style="'width: ' + characterSkillCurrent[index] * 10 + '%'"></div>
@@ -53,11 +57,15 @@
         <div class="skill-box" v-for="(skill,index) in commonSkill" :key="skill.name">
           <div class="skill-info">
             <div class="skill-img"><img :src="'/static/images/common' + (index + 1) +'.jpg'" alt=""></div>
-            <div class="skill-info-line">{{skill.name}}</div>
-            <div class="skill-info-line">{{skill.class}}系</div>
-            <div class="skill-info-line">升级所需SP：{{skill.sp[commonSkillCurrent[index]]}}</div>
-            <div class="skill-info-line">升级所需等级：{{skill.level[commonSkillCurrent[index]]}}</div>
-            <div class="skill-info-line">升级需要{{skill.class}}系技能点数：{{skill.require[commonSkillCurrent[index]]}}</div>
+            <div class="skill-info-line">{{skill.name}} | {{skill.class}}系</div>
+            <div class="skill-info-line" v-if="skill.max === commonSkillCurrent[index]">{{skill.detail[commonSkillCurrent[index] - 1]}}</div>
+            <div class="skill-info-line" v-else>升级后：{{skill.detail[commonSkillCurrent[index]]}}</div>
+            <div class="skill-info-line" v-if="skill.max === commonSkillCurrent[index]"></div>
+            <div class="skill-info-line" v-else>升级所需SP：{{skill.sp[commonSkillCurrent[index]]}}</div>
+            <div class="skill-info-line" v-if="skill.max === commonSkillCurrent[index]"></div>
+            <div class="skill-info-line" v-else>升级所需等级：{{skill.level[commonSkillCurrent[index]]}}</div>
+            <div class="skill-info-line" v-if="skill.max === commonSkillCurrent[index]">已达满级</div>
+            <div class="skill-info-line" v-else>升级需要{{skill.class}}系技能点数：{{skill.require[commonSkillCurrent[index]]}}</div>
             <div class="skill-level-line">
               <div class="skill-level-bottom" :style="'width: ' + skill.max * 10 + '%'"></div>
               <div class="skill-level-bg" :style="'width: ' + commonSkillCurrent[index] * 10 + '%'"></div>
