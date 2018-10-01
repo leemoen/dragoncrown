@@ -1,27 +1,27 @@
 @import 'compass/reset';
 @import "compass/css3";
 body{
-  font-size: 1.4rem;
   color: #000;
+  font-size: 0.14rem;
 }
 @media screen and (max-width: 3440px) {
   body{
-    background: #000 url("../images/bg@3440.jpg") no-repeat top center;
+    background: #eee url("../images/bg@3440.jpg") no-repeat fixed top center;
   }
 }
 @media screen and (max-width: 2880px) {
   body{
-    background: #000 url("../images/bg@2880.jpg") no-repeat top center;
+    background: #eee url("../images/bg@2880.jpg") no-repeat fixed top center;
   }
 }
 @media screen and (max-width: 1920px) {
   body{
-    background: #000 url("../images/bg@1920.jpg") no-repeat top center;
+    background: #eee url("../images/bg@1920.jpg") no-repeat fixed top center;
   }
 }
 @media screen and (max-width: 1000px) {
   body{
-    background: transparent;
+    background: #eeeeee;
   }
 }
 div{
@@ -52,5 +52,4 @@ a{
   width: 10rem;
   margin-left: auto;
   margin-right: auto;
-  background: #eee;
 }
