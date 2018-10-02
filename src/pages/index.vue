@@ -12,6 +12,8 @@
           {{characterName[index]}}
         </option>
       </select>
+      <button @click="showSkillList = true" v-if="characterSelected !== ''">生成技能表</button>
+      <button @click="resetSkill" v-if="characterSelected !== ''">重置技能</button>
     </div>
     <div class="skill-count-line" v-if="characterSelected !== ''">
       <div class="skill-count">技能点：{{skillTotal}}/155</div>
@@ -88,6 +90,25 @@
         </div>
       </div>
     </div>
+    <div class="skill-list-panel" v-if="showSkillList">
+      <div class="skill-list-box">
+        <ul>
+          <li v-for="(skill,index) in characterSkill[characterSelected]" :key="skill.name" v-if="characterSkillCurrent[index] > 0">
+            <div class="skill-list-top">{{skill.name}} | {{skill.class}}系 | 等级：{{characterSkillCurrent[index]}} | {{skill.detail[characterSkillCurrent[index] - 1]}}</div>
+          </li>
+          <li v-for="(skill,index) in commonSkill" :key="skill.name" v-if="commonSkillCurrent[index] > 0">
+            <div class="skill-list-top">{{skill.name}} | {{skill.class}}系 | 等级：{{commonSkillCurrent[index]}} | {{skill.detail[commonSkillCurrent[index] - 1]}}</div>
+          </li>
+        </ul>
+        <div class="close">
+          <button @click="showSkillList = false">关闭</button>
+        </div>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>如遇Bug，请Email至：lee@ojisan.me</p>
+      <p>Powered by <a href="http://www.ojisan.me">ojisan.me</a> 2018</p>
+    </div>
   </div>
 </template>
 
@@ -106,7 +127,8 @@ export default {
       characterSkillCurrent: [],
       commonSkillCurrent: [0, 0, 0, 0, 0, 0, 0, 0, 0],
       classCounts: [0, 0, 0, 0],
-      skillTotal: 0
+      skillTotal: 0,
+      showSkillList: false
     }
   },
   mounted () {
@@ -145,6 +167,40 @@ export default {
         if (this.characterSkillCurrent[index] === 0) {
           return
         }
+        let _thisSkillClass = this.characterSkill[this.characterSelected][index].class
+        let _thisClassCount = this.classCounts[this.classNames.indexOf(_thisSkillClass)]
+        let _currentClassIndexes = []
+        for (let i = 0; i < this.characterSkill[this.characterSelected].length; i++) {
+          if (this.characterSkill[this.characterSelected][i].class === _thisSkillClass && i !== index) {
+            _currentClassIndexes.push(i)
+            if (this.characterSkill[this.characterSelected][i].require[this.characterSkillCurrent[i] - 1] > _thisClassCount - 2) {
+              alert(this.characterSkill[this.characterSelected][i].name + '对' + _thisSkillClass + '系点数有总数要求，请先降低' + this.characterSkill[this.characterSelected][i].name + '技能等级')
+              return
+            }
+          }
+        }
+        let _selectedIndex = []
+        for (let i = 0; i < _currentClassIndexes.length; i++) {
+          if (this.characterSkillCurrent[_currentClassIndexes[i]] > 0) {
+            _selectedIndex.push(i)
+          }
+        }
+        for (let n = 0; n < _selectedIndex.length; n++) {
+          let _selectedRequireNow = this.characterSkill[this.characterSelected][_currentClassIndexes[_selectedIndex[n]]].require[this.characterSkillCurrent[_currentClassIndexes[_selectedIndex[n]]] - 1]
+          let _selectedRequireLast = 0
+          let _selectedLastLevel = 0
+          for (let i = 0; i < this.characterSkill[this.characterSelected][_currentClassIndexes[_selectedIndex[n]]].require.length; i++) {
+            if (this.characterSkill[this.characterSelected][_currentClassIndexes[_selectedIndex[n]]].require[i] === _selectedRequireNow) {
+              _selectedRequireLast = this.characterSkill[this.characterSelected][_currentClassIndexes[_selectedIndex[n]]].require[i]
+              _selectedLastLevel = i
+              break
+            }
+          }
+          if (_selectedRequireLast > _thisClassCount - 1 - (this.characterSkillCurrent[_currentClassIndexes[_selectedIndex[n]]] - _selectedLastLevel)) {
+            alert(this.characterSkill[this.characterSelected][_currentClassIndexes[_selectedIndex[n]]].name + '对' + _thisSkillClass + '系点数有总数要求，请先降低' + this.characterSkill[this.characterSelected][_currentClassIndexes[_selectedIndex[n]]].name + '技能等级')
+            return
+          }
+        }
         this.skillTotal -= this.characterSkill[this.characterSelected][index].sp[this.characterSkillCurrent[index] - 1]
         this.$set(this.characterSkillCurrent, index, this.characterSkillCurrent[index] - 1)
         this.$set(this.classCounts, this.classNames.indexOf(this.characterSkill[this.characterSelected][index].class), this.classCounts[this.classNames.indexOf(this.characterSkill[this.characterSelected][index].class)] - 1)
@@ -169,10 +225,51 @@ export default {
         if (this.commonSkillCurrent[index] === 0) {
           return
         }
+        let _currentClassIndexes = []
+        for (let i = 0; i < this.commonSkill.length; i++) {
+          if (i !== index) {
+            _currentClassIndexes.push(i)
+            if (this.commonSkill[i].require[this.commonSkillCurrent[i] - 1] > this.classCounts[3] - 2) {
+              alert(this.commonSkill[i].name + '对一般系点数有总数要求，请先降低' + this.commonSkill[i].name + '技能等级')
+              return
+            }
+          }
+        }
+        let _selectedIndex = []
+        for (let i = 0; i < _currentClassIndexes.length; i++) {
+          if (this.commonSkillCurrent[_currentClassIndexes[i]] > 0) {
+            _selectedIndex.push(i)
+          }
+        }
+        for (let n = 0; n < _selectedIndex.length; n++) {
+          let _selectedRequireNow = this.commonSkill[_currentClassIndexes[_selectedIndex[n]]].require[this.commonSkillCurrent[_currentClassIndexes[_selectedIndex[n]]] - 1]
+          let _selectedRequireLast = 0
+          let _selectedLastLevel = 0
+          for (let i = 0; i < this.commonSkill[_currentClassIndexes[_selectedIndex[n]]].require.length; i++) {
+            if (this.commonSkill[_currentClassIndexes[_selectedIndex[n]]].require[i] === _selectedRequireNow) {
+              _selectedRequireLast = this.commonSkill[_currentClassIndexes[_selectedIndex[n]]].require[i]
+              _selectedLastLevel = i
+              break
+            }
+          }
+          if (_selectedRequireLast > this.classCounts[3] - 1 - (this.commonSkillCurrent[_currentClassIndexes[_selectedIndex[n]]] - _selectedLastLevel)) {
+            alert(this.commonSkill[_currentClassIndexes[_selectedIndex[n]]].name + '对一般系点数有总数要求，请先降低' + this.commonSkill[_currentClassIndexes[_selectedIndex[n]]].name + '技能等级')
+            return
+          }
+        }
         this.skillTotal -= this.commonSkill[index].sp[this.commonSkillCurrent[index] - 1]
         this.$set(this.commonSkillCurrent, index, this.commonSkillCurrent[index] - 1)
         this.$set(this.classCounts, 3, this.classCounts[3] - 1)
       }
+    },
+    resetSkill: function () {
+      this.skillTotal = 0
+      this.characterSkillCurrent = []
+      for (let i = 0; i < this.characterSkill[this.characterSelected].length; i++) {
+        this.characterSkillCurrent.push(0)
+      }
+      this.commonSkillCurrent = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+      this.classCounts = [0, 0, 0, 0]
     }
   },
   computed: {
@@ -213,7 +310,7 @@ export default {
 
   .character-select {
     width: 10rem;
-    height: 0.4rem;
+    height: 0.6rem;
     padding-top: 0.1rem;
     font-size: 0;
     text-align: center;
@@ -225,17 +322,28 @@ export default {
     z-index: 99;
     select {
       width: 3rem;
-      height: 0.3rem;
+      height: 0.4rem;
+      margin-top: 0.1rem;
       font-size: 0.14rem;
       option {
         font-size: 0.14rem;
       }
     }
+    button{
+      width: 1.2rem;
+      height: 0.4rem;
+      margin-left: 0.5rem;
+      background: linear-gradient(to bottom, #f95c36,#f96e48);
+      color: #fff;
+      border: none;
+      border-radius: 0.04rem;
+      cursor: pointer;
+    }
   }
 
   .skill-count-line {
     position: fixed;
-    top: 1.4rem;
+    top: 1.6rem;
     left: 50%;
     transform: translate(-50%, 0);
     width: 9.6rem;
@@ -339,7 +447,72 @@ export default {
       }
     }
   }
-
+  .skill-list-panel{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0,0,0,.4);
+    z-index: 999;
+    .skill-list-box{
+      position: absolute;
+      padding: 0.2rem;
+      width: 8rem;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      background: #eee;
+      ul{
+        width: 100%;
+        margin: 0 auto;
+        border: 0.02rem solid #333;
+        li{
+          width: 100%;
+          height: 0.3rem;
+          padding: 0 0.2rem;
+          box-sizing: border-box;
+          border-bottom: 0.01rem solid #333;
+          &:last-child{
+            border-bottom: none;
+          }
+          &:nth-child(2n){
+            background: #ddd;
+          }
+          .skill-list-top{
+            line-height: 0.3rem;
+          }
+        }
+      }
+    }
+    .close{
+      width: 100%;
+      height: 0.6rem;
+      font-size: 0;
+      text-align: center;
+      margin-top: 0.2rem;
+      button{
+        width: 1.2rem;
+        height: 0.4rem;
+        background: linear-gradient(to bottom, #f95c36,#f96e48);
+        color: #fff;
+        border: none;
+        border-radius: 0.04rem;
+        cursor: pointer;
+      }
+    }
+  }
+  .copyright{
+    width: 100%;
+    text-align: center;
+    color: #666;
+    line-height: 0.3rem;
+    margin-top: 0.2rem;
+    font-size: 0.12rem;
+    a{
+      color: #333;
+    }
+  }
   @media screen and (min-width: 750px) {
     .skill-box {
       width: 50%;

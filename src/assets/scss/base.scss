@@ -27,7 +27,7 @@ body{
 div{
   @include box-sizing(border-box);
 }
-input,textarea{
+input,textarea,button{
   outline:none;
   &:focus{
     border:none;
