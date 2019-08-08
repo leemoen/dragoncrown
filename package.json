@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "compass-mixins": "^0.12.10",
+    "npm": "^6.10.3",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import skill from '@/components/skillconfig'
+import skill from './../components/skillconfig'
 
 export default {
   name: 'index',
